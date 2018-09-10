@@ -64,4 +64,38 @@ window.onload = () => {
                 });
         });
     });
+
+    // Delete everything from database on clear
+    let clearButtons = document.querySelectorAll('.clear');
+    clearButtons.forEach(element => {
+        element.addEventListener('click', () => {
+            axios({
+                method: 'post',
+                url: '/api/modal',
+                data: {
+                    title: 'Delete Everything - Are You Sure?',
+                    body: 'If you click delete, you will delete every article, saved and unsaved!',
+                    confirm: 'Delete Everything'
+                }
+            })
+                .then((response) => {
+                    let modal = document.getElementById('modalID');
+                    let modalBody = document.getElementById('modalBody');
+                    modalBody.innerHTML = response.data;
+                    let modalInstance = new Modal(modal);
+
+                    // Setup scrape confirm event listener
+                    // Actually scrape and go to home page
+                    let clearConfirm = document.querySelector('#modalConfirm');
+                    clearConfirm.addEventListener('click', () => {
+                        axios.delete('/api/clear')
+                            .then(() => {
+                                window.location = homeURL;
+                            });
+                    });
+
+                    modalInstance.show();
+                });
+        });
+    });
 };
