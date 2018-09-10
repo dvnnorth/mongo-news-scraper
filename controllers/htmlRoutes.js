@@ -1,10 +1,13 @@
-const cheerio = require('cheerio');
-const request = require('request');
+const db = require('../models');
 
 module.exports = (app) => {
 
     app.get('/', (req, res) => {
-        res.statusCode = 200;
-        res.render('home');
+        db.Articles.find({})
+            .then(articles => {
+                console.log(articles);
+                res.statusCode = 200;
+                res.render('home', { articles: articles });
+            });
     });
 };

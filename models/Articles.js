@@ -11,9 +11,19 @@ const ArticlesSchema = new Schema({
         type: String,
         required: true
     },
+    // 'section' is required and of type String
+    section: {
+        type: String,
+        required: true
+    },
     // `link` is required and of type String
     link: {
         type: String,
+        required: true
+    },
+    saved: {
+        type: Boolean,
+        default: false,
         required: true
     },
     // `note` is an object that stores a Note id
@@ -21,7 +31,7 @@ const ArticlesSchema = new Schema({
     // This allows us to populate the Articles with an associated Note
     note: {
         type: Schema.Types.ObjectId,
-        ref: 'Note'
+        ref: 'Notes'
     }
 });
 

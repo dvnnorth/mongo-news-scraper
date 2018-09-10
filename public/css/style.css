@@ -123,3 +123,13 @@ h1, h2, h3, h4, h5, h6 {
 .blog-footer p:last-child {
   margin-bottom: 0;
 }
+
+.splash {
+  background: url('../img/hayden-walker-705539-unsplash.jpg');
+}
+
+.gap-after::after {
+  content: "";
+  display: flex;
+  height: 10px;
+}
