@@ -4,7 +4,7 @@
         <nav class="nav d-flex justify-content-left">
             <a class="p-2 text-muted" href="#">Home</a>
             <span class="p-2 text-muted"> | </span>
-            <a class="p-2 text-muted" href="#">Saved Articles</a>
+            <a class="p-2 text-muted" href="/saved">Saved Articles</a>
             <span class="p-2 text-muted"> | </span>
             <a class="p-2 text-muted scrape" href="#">Scrape</a>
             <span class="p-2 text-muted"> | </span>
@@ -20,8 +20,8 @@
     </div>
 
     <main class="row mb-2">
-        {{#each articles}}
-        <div class="col-md-6 mb-4" data-id="{{this._id}}">
+        {{#if articles}} {{#each articles}}
+        <div class="col-md-6 mb-4">
             <div class="card flex-md-row shadow-sm h-100">
                 <div class="card-body d-flex flex-column align-items-start">
                     <strong class="d-inline-block mb-2 text-primary">{{this.section}}</strong>
@@ -30,20 +30,27 @@
                     </h3>
                     <div>
                         {{#if this.note}}
-                        <a class="btn btn-outline-primary mt-3 mb-3 note" href="#">View / Edit Note</a>
+                        <a class="btn btn-outline-primary mt-3 mb-3 note" href="#" data-id="{{this._id}}">View / Edit Note</a>
                         {{else}}
-                        <a class="btn btn-outline-secondary mt-3 mb-3 note" href="#">Create Note</a>
-                        {{/if}} 
-                        {{#unless this.saved}}
-                        <a class="btn btn-outline-success mt-3 mb-3 save" href="#">Save Article</a>
+                        <a class="btn btn-outline-secondary mt-3 mb-3 note" href="#" data-id="{{this._id}}">Create Note</a>
+                        {{/if}} {{#unless this.saved}}
+                        <a class="btn btn-outline-success mt-3 mb-3 save" href="#" data-id="{{this._id}}">Save Article</a>
                         {{/unless}}
                     </div>
                 </div>
             </div>
         </div>
-        {{/each}}
-        <a class="btn btn-outline-primary ml-3 mb-3 scrape" href="#">Scrape</a>
-        <a class="btn btn-outline-danger ml-3 mb-3 clear" href="#">Clear All</a>
+        {{/each}} {{else}}
+        <div class="col-md-6 offset-md-3 mb-4">
+            <div class="alert alert-dark">
+                {{{defaultText}}}
+            </div>
+        </div>
+        {{/if}}
+        <div class="col-12">
+            <a class="btn btn-outline-primary ml-3 mb-3 scrape" href="#">Scrape</a>
+            <a class="btn btn-outline-danger ml-3 mb-3 clear" href="#">Clear All</a>
+        </div>
     </main>
 </div>
 
