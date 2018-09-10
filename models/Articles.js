@@ -9,7 +9,8 @@ const ArticlesSchema = new Schema({
     // `title` is required and of type String
     title: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     // 'section' is required and of type String
     section: {

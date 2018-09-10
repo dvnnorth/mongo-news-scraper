@@ -20,7 +20,7 @@ module.exports = (app) => {
         // Set default text
         defaultText = 'There are no saved articles! Go <a href="/">home</a> to save some.';
         // Find all saved articles and send them
-        db.SavedArticles.find({})
+        db.Articles.find({ saved: true })
             .then(articles => {
                 res.statusCode = 200;
                 res.render('saved', { pageTitle: 'Saved', articles: articles, defaultText: defaultText });

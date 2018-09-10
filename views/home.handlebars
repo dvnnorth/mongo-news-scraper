@@ -6,9 +6,9 @@
             <span class="p-2 text-muted"> | </span>
             <a class="p-2 text-muted" href="/saved">Saved Articles</a>
             <span class="p-2 text-muted"> | </span>
-            <a class="p-2 text-muted scrape" href="#">Scrape</a>
+            <a class="p-2 text-muted scrape" href="javascript:void(0)">Scrape</a>
             <span class="p-2 text-muted"> | </span>
-            <a class="p-2 text-danger text-muted clear" href="#">Clear All</a>
+            <a class="p-2 text-danger text-muted clear" href="javascript:void(0)">Clear All</a>
         </nav>
     </div>
 
@@ -35,13 +35,13 @@
                         <a class="text-dark" href="{{this.link}}">{{this.title}}</a>
                     </h3>
                     <div>
-                        {{#if this.note}}
-                        <a class="btn btn-outline-primary mt-3 mb-3 note" href="#" data-id="{{this._id}}">View / Edit Note</a>
+                        {{#if this.note}} 
+                        <a class="btn btn-outline-primary mt-3 mb-3 note" href="javascript:void(0)" data-id="{{this._id}}">View / Edit Note</a>
                         {{else}}
-                        <a class="btn btn-outline-secondary mt-3 mb-3 note" href="#" data-id="{{this._id}}">Create Note</a>
+                        <a class="btn btn-outline-secondary mt-3 mb-3 note" href="javascript:void(0)" data-id="{{this._id}}">Create Note</a>
                         {{/if}} 
                         {{#unless this.saved}}
-                        <a class="btn btn-outline-success mt-3 mb-3 save" href="#" data-id="{{this._id}}">Save Article</a>
+                        <a class="btn btn-outline-success mt-3 mb-3 save" href="javascript:void(0)" data-id="{{this._id}}">Save Article</a>
                         {{/unless}}
                     </div>
                 </div>
@@ -55,8 +55,8 @@
         </div>
         {{/if}}
         <div class="col-12">
-            <a class="btn btn-outline-primary ml-3 mb-3 scrape" href="#">Scrape</a>
-            <a class="btn btn-outline-danger ml-3 mb-3 clear" href="#">Clear All</a>
+            <a class="btn btn-outline-primary ml-3 mb-3 scrape" href="javascript:void(0)">Scrape</a>
+            <a class="btn btn-outline-danger ml-3 mb-3 clear" href="javascript:void(0)">Clear All</a>
         </div>
     </main>
 </div>
@@ -67,7 +67,7 @@
     <p>Front-end based on a template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.
         Built by Devin North.</p>
     <p>
-        <a href="#">Back to top</a>
+        <a href="javascript:void(0)">Back to top</a>
     </p>
 </footer>
 

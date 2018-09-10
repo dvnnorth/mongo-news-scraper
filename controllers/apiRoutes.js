@@ -7,7 +7,7 @@ module.exports = (app) => {
     app.get('/api/scrape', (req, res) => {
 
         // Clear the unsaved articles
-        db.Articles.deleteMany()
+        db.Articles.deleteMany({ saved: false })
             .then(() => {
                 // Get the html from nytimes
                 request.get('https://www.nytimes.com')
@@ -51,7 +51,7 @@ module.exports = (app) => {
                         });
 
                         // Bulk insert all of the article objects
-                        db.Articles.insertMany(articles)
+                        db.Articles.insertMany(articles, { ordered: false })
                             .then(() => {
                                 // Get every article
                                 db.Articles.find({})
@@ -79,12 +79,7 @@ module.exports = (app) => {
                     res.json(article);
                 }
                 else {
-                    db.SavedArticles.findOne({ _id: req.params.id })
-                        .populate('note')
-                        .then(savedArticle => {
-                            res.json(savedArticle);
-                        })
-                        .catch(err => (err, res));
+                    res.sendStatus(404);
                 }
             })
             .catch(err => errorSend(err, res));
@@ -104,23 +99,11 @@ module.exports = (app) => {
                             article.note = note._id;
                             article.new = true;
                             article.save(() => {
-                                db.SavedArticles.findOneAndUpdate({ title: article.title }, { note: note._id }, { new: true })
-                                    .then(() => {
-                                        res.sendStatus(200);
-                                    })
-                                    .catch(err => errorSend(err, res));
+                                res.sendStatus(200);
                             });
                         }
                         else {
-                            db.SavedArticles.findOneAndUpdate({ _id: req.params.id }, { note: note._id }, { new: true })
-                                .then(savedArticle => {
-                                    db.Articles.findOneAndUpdate({ title: savedArticle.title }, { note: note._id }, { new: true })
-                                        .then(() => {
-                                            res.sendStatus(200);
-                                        })
-                                        .catch(err => errorSend(err, res));
-                                })
-                                .catch(err => errorSend(err, res));
+                            res.sendStatus(404);
                         }
                     });
             })
@@ -137,28 +120,9 @@ module.exports = (app) => {
         db.Articles.findById(req.params.id)
             .then(article => {
                 article.saved = true;
-                let { title, section, link, note } = article;
-                let newArticle = {
-                    title: title,
-                    section: section,
-                    link: link,
-                    note: note
-                };
                 article.save(() => {
-                    db.SavedArticles.find({ title: article.title })
-                        .then(data => {
-                            if (data.length === 0) {
-                                db.SavedArticles.create(newArticle)
-                                    .then((savedArticle) => {
-                                        res.statusCode = 200;
-                                        res.send(savedArticle);
-                                    })
-                                    .catch(err => errorSend(err, res));
-                            }
-                            else {
-                                res.sendStatus(204);
-                            }
-                        });
+                    res.statusCode = 200;
+                    res.send(article);
                 });
             })
             .catch(err => errorSend(err, res));
@@ -166,21 +130,12 @@ module.exports = (app) => {
 
     // Unsave an article
     app.delete('/api/save/:id', (req, res) => {
-        console.log(req.params.id);
-        db.SavedArticles.findOneAndDelete({ _id: req.params.id })
-            .then((removed) => {
-                console.log(removed);
-                db.Articles.findOne({ title: removed.title })
-                    .then((article) => {
-                        console.log(article);
-                        article.saved = false;
-                        console.log(article);
-                        article.save(() => {
-                            console.log('sending status');
-                            res.sendStatus(200);
-                        });
-                    })
-                    .catch(err => errorSend(err, res));
+        db.Articles.findOne({ _id: req.params.id })
+            .then((article) => {
+                article.saved = false;
+                article.save(() => {
+                    res.sendStatus(200);
+                });
             })
             .catch(err => errorSend(err, res));
     });
@@ -189,11 +144,7 @@ module.exports = (app) => {
     app.delete('/api/clear', (req, res) => {
         db.Articles.deleteMany({})
             .then(() => {
-                db.SavedArticles.deleteMany({})
-                    .then(() => {
-                        res.sendStatus(200);
-                    })
-                    .catch(err => errorSend(err, res));
+                res.sendStatus(200);
             })
             .catch(err => errorSend(err, res));
     });

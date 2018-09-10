@@ -56,16 +56,14 @@ window.onload = () => {
     clearFromSaveButtons.forEach(element => {
         element.addEventListener('click', () => {
             let url = `/api/save/${element.dataset.id}`;
-            console.log(url);
             axios({
                 method: 'delete',
                 url: url
             })
-                .then((response) => {
-                    console.log('response', response);
-                    // window.location.reload(true);
+                .then(() => {
+                    window.location.reload(true);
                 })
-                .catch(err => console.log(err));
+                .catch(err => axios.post('/api/log', { log: err }));
         });
     });
 

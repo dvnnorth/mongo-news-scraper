@@ -30,5 +30,5 @@ mongoose.Promise = Promise;
 
 // Connect to database and setup listener
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true }, () => {
-    app.listen(PORT, () => console.log(`Application running on port ${PORT}`));
+    app.listen(PORT /* , () => console.log(`Application running on port ${PORT}`) */);
 });

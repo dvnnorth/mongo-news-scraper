@@ -26,5 +26,9 @@
             "error",
             "always"
         ]
+    },
+    "globals": {
+        "axios": false,
+        "Modal": false
     }
 }
