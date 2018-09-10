@@ -45,8 +45,7 @@ window.onload = () => {
         element.addEventListener('click', () => {
             let url = `/api/save/${element.dataset.id}`;
             axios.put(url)
-                .then((response) => {
-                    console.log(response);
+                .then(() => {
                     window.location = savedURL;
                 });
         });
@@ -57,11 +56,16 @@ window.onload = () => {
     clearFromSaveButtons.forEach(element => {
         element.addEventListener('click', () => {
             let url = `/api/save/${element.dataset.id}`;
-            axios.delete(url)
+            console.log(url);
+            axios({
+                method: 'delete',
+                url: url
+            })
                 .then((response) => {
-                    console.log(response);
-                    window.location.reload(true);
-                });
+                    console.log('response', response);
+                    // window.location.reload(true);
+                })
+                .catch(err => console.log(err));
         });
     });
 
@@ -100,8 +104,6 @@ window.onload = () => {
                             let note;
                             let titleinput = document.querySelector('#titleinput');
                             let bodyinput = document.querySelector('#bodyinput');
-                            console.log(response);
-                            console.log(response.data);
                             if (response.data && response.data.hasOwnProperty('note')) {
                                 note = response.data.note;
                             }
@@ -111,7 +113,6 @@ window.onload = () => {
                             }
                             submitConfirm.addEventListener('click', () => {
                                 let data = {};
-                                console.log(titleinput, bodyinput);
                                 if (titleinput.value && bodyinput.value) {
                                     data.title = titleinput.value.trim();
                                     data.body = bodyinput.value.trim();

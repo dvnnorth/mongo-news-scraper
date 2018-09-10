@@ -166,13 +166,18 @@ module.exports = (app) => {
 
     // Unsave an article
     app.delete('/api/save/:id', (req, res) => {
-        db.SavedArticles.findOneAndRemove({ _id: req.params.id })
+        console.log(req.params.id);
+        db.SavedArticles.findOneAndDelete({ _id: req.params.id })
             .then((removed) => {
+                console.log(removed);
                 db.Articles.findOne({ title: removed.title })
                     .then((article) => {
+                        console.log(article);
                         article.saved = false;
+                        console.log(article);
                         article.save(() => {
-                            res.sendStatus = 200;
+                            console.log('sending status');
+                            res.sendStatus(200);
                         });
                     })
                     .catch(err => errorSend(err, res));
