@@ -67,8 +67,14 @@ module.exports = (app) => {
         });
     });
 
-    app.post('/api/save/:id', (req, res) => {
+    // Save an article
+    app.put('/api/save/:id', (req, res) => {
+        saveOrUnsave(req, res, true);
+    });
 
+    // Unsave an article
+    app.delete('/api/save/:id', (req, res) => {
+        saveOrUnsave(req, res, false);
     });
 
     app.delete('/api/clear', (req, res) => {
@@ -101,4 +107,16 @@ let clearDocuments = (res, callback) => {
             callback(res);
         })
         .catch(err => { throw err; });
+};
+
+let saveOrUnsave = (req, res, save) => {
+    db.Articles.findById(req.params.id)
+        .then(article => {
+            article.saved = save;
+            article.save((err, updatedArticle) => {
+                if (err) errorSend(err, res);
+                res.send(updatedArticle);
+            });
+        })
+        .catch(err => errorSend(err, res));
 };
