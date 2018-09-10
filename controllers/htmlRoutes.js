@@ -9,21 +9,21 @@ module.exports = (app) => {
         // Set default text
         defaultText = 'There are no scraped articles!';
         // Find all articles and send them
-        findAllAndSend(res, defaultText);
+        findAllAndSend(res, defaultText, 'Home');
     });
 
     app.get('/saved', (req, res) => {
         // Set default text
         defaultText = 'There are no saved articles! Go <a href="/">home</a> to save some.';
         // Find all saved articles and send them
-        findAllAndSend(res, defaultText, { saved: true });
+        findAllAndSend(res, defaultText, 'Saved', { saved: true });
     });
 };
 
-let findAllAndSend = (res, defaultText, constraints) => {
+let findAllAndSend = (res, defaultText, pageTitle, constraints) => {
     db.Articles.find(constraints ? constraints : {})
         .then(articles => {
             res.statusCode = 200;
-            res.render('home', { pageTitle: 'Saved', articles: articles, defaultText: defaultText });
+            res.render('home', { pageTitle: pageTitle, articles: articles, defaultText: defaultText });
         });
 }
