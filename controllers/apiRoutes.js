@@ -68,6 +68,65 @@ module.exports = (app) => {
             .catch(err => errorSend(err, res));
     });
 
+    // Get article with note
+    app.get('/api/articles/notes/:id', (req, res) => {
+        db.Articles.findOne({ _id: req.params.id })
+            // ..and populate all of the notes associated with it
+            .populate('note')
+            .then(article => {
+                // If we were able to successfully find an Article with the given id, send it back to the client
+                if (article) {
+                    res.json(article);
+                }
+                else {
+                    db.SavedArticles.findOne({ _id: req.params.id })
+                        .populate('note')
+                        .then(savedArticle => {
+                            res.json(savedArticle);
+                        })
+                        .catch(err => (err, res));
+                }
+            })
+            .catch(err => errorSend(err, res));
+    });
+
+    // Add / update note info
+    app.post('/api/articles/notes/:id', (req, res) => {
+        // Create a new note and pass the req.body to the entry
+        db.Notes.create(req.body)
+            .then(note => {
+                // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
+                // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+                // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+                db.Articles.findOne({ _id: req.params.id }/*, { note: note._id }, { new: true }*/)
+                    .then(article => {
+                        if (article) {
+                            article.note = note._id;
+                            article.new = true;
+                            article.save(() => {
+                                db.SavedArticles.findOneAndUpdate({ title: article.title }, { note: note._id }, { new: true })
+                                    .then(() => {
+                                        res.sendStatus(200);
+                                    })
+                                    .catch(err => errorSend(err, res));
+                            });
+                        }
+                        else {
+                            db.SavedArticles.findOneAndUpdate({ _id: req.params.id }, { note: note._id }, { new: true })
+                                .then(savedArticle => {
+                                    db.Articles.findOneAndUpdate({ title: savedArticle.title }, { note: note._id }, { new: true })
+                                        .then(() => {
+                                            res.sendStatus(200);
+                                        })
+                                        .catch(err => errorSend(err, res));
+                                })
+                                .catch(err => errorSend(err, res));
+                        }
+                    });
+            })
+            .catch(err => errorSend(err, res));
+    });
+
     // Modal builder
     app.post('/api/modal', (req, res) => {
         res.render('modal', { content: req.body });
@@ -83,7 +142,7 @@ module.exports = (app) => {
                     title: title,
                     section: section,
                     link: link,
-                    node: note
+                    note: note
                 };
                 article.save(() => {
                     db.SavedArticles.find({ title: article.title })

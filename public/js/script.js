@@ -65,6 +65,79 @@ window.onload = () => {
         });
     });
 
+    // Display node modal and submit note
+    // Delete everything from database on clear
+    let noteButtons = document.querySelectorAll('.note');
+    noteButtons.forEach(element => {
+        element.addEventListener('click', () => {
+            let title = element.parentElement.previousElementSibling.innerText;
+            let body = '<div class="form-group">' +
+                '<label for="titleinput">Title:</label>' +
+                '<br><input type="text" id="titleinput" name="title" size=40></div>' +
+                '<div class="form-group">' +
+                '<label for="bodyinput">Note:</label>' +
+                '<textarea id="bodyinput" class="form-control" name="body"></textarea></div>' +
+                '<span id="errorDisplay" class="text-danger"></span>';
+            axios({
+                method: 'post',
+                url: '/api/modal',
+                data: {
+                    title: `Note - ${title}`,
+                    body: body,
+                    confirm: 'Submit'
+                }
+            })
+                .then((response) => {
+                    let modal = document.getElementById('modalID');
+                    let modalBody = document.getElementById('modalBody');
+                    modalBody.innerHTML = response.data;
+                    let modalInstance = new Modal(modal);
+                    let submitConfirm = document.querySelector('#modalConfirm');
+                    let url = `/api/articles/notes/${element.dataset.id}`;
+
+                    axios.get(url)
+                        .then((response) => {
+                            let note;
+                            let titleinput = document.querySelector('#titleinput');
+                            let bodyinput = document.querySelector('#bodyinput');
+                            console.log(response);
+                            console.log(response.data);
+                            if (response.data && response.data.hasOwnProperty('note')) {
+                                note = response.data.note;
+                            }
+                            if (note) {
+                                titleinput.value = note.title.trim();
+                                bodyinput.value = note.body.trim();
+                            }
+                            submitConfirm.addEventListener('click', () => {
+                                let data = {};
+                                console.log(titleinput, bodyinput);
+                                if (titleinput.value && bodyinput.value) {
+                                    data.title = titleinput.value.trim();
+                                    data.body = bodyinput.value.trim();
+                                    axios({
+                                        method: 'post',
+                                        url: url,
+                                        data: data
+                                    })
+                                        .then(() => {
+                                            window.location = homeURL;
+                                        })
+                                        .catch(err => {
+                                            document.querySelector('#errorDisplay').innerText = err;
+                                        });
+                                }
+                                else {
+                                    document.querySelector('#errorDisplay').innerText = 'Neither "Title" nor "Note" field can be blank!';
+                                }
+                            });
+                        });
+
+                    modalInstance.show();
+                });
+        });
+    });
+
     // Delete everything from database on clear
     let clearButtons = document.querySelectorAll('.clear');
     clearButtons.forEach(element => {
