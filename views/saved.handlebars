@@ -39,10 +39,8 @@
                         <a class="btn btn-outline-primary mt-3 mb-3 note" href="#" data-id="{{this._id}}">View / Edit Note</a>
                         {{else}}
                         <a class="btn btn-outline-secondary mt-3 mb-3 note" href="#" data-id="{{this._id}}">Create Note</a>
-                        {{/if}} 
-                        {{#unless this.saved}}
-                        <a class="btn btn-outline-success mt-3 mb-3 save" href="#" data-id="{{this._id}}">Save Article</a>
-                        {{/unless}}
+                        {{/if}}
+                        <a class="btn btn-outline-dark mt-3 mb-3 save-remove" href="" data-id="{{this._id}}">Remove From Saved</a>
                     </div>
                 </div>
             </div>

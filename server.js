@@ -23,7 +23,7 @@ apiRoutes(app);
 htmlRoutes(app);
 
 // If deployed, get URI from environment, otherwise use localhost
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines';
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 mongoose.Promise = Promise;
